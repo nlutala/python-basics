@@ -91,6 +91,7 @@ def load_fake_person_data(file_name: str):
     cur.executemany("INSERT INTO people VALUES(?, ?, ?, ?, ?, ?, ?)", data)
     con.commit()
     con.close()
+    file.close()
 
 
 if __name__ == "__main__":
