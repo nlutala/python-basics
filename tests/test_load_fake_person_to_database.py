@@ -48,13 +48,13 @@ def test_load_fake_person_data():
     assert len(query_result) == 1
 
     # Check the contents of the fields
-    assert query_result[0][0] == str(fake_person_data[0])
-    assert query_result[0][1] == fake_person_data[1]
-    assert query_result[0][2] == fake_person_data[2]
-    assert query_result[0][3] == fake_person_data[3]
-    assert query_result[0][4] == fake_person_data[4]
-    assert query_result[0][5] == fake_person_data[5]
-    assert query_result[0][6] == fake_person_data[6]
+    assert query_result[0][0] == str(fake_person_data.get("id"))
+    assert query_result[0][1] == fake_person_data.get("full_name")
+    assert query_result[0][2] == fake_person_data.get("first_name")
+    assert query_result[0][3] == fake_person_data.get("last_name")
+    assert query_result[0][4] == fake_person_data.get("email_address")
+    assert query_result[0][5] == fake_person_data.get("phone_number")
+    assert query_result[0][6] == fake_person_data.get("linkedin_profile")
 
     con.close()
     os.remove("test_fake_person_data.csv")

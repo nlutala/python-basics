@@ -10,11 +10,11 @@ from faker import Faker  # type: ignore
 CSV_FILE_NAME = "fake_person_data.csv"
 
 
-def create_fake_person_data() -> list:
+def create_fake_person_data() -> dict[str, str]:
     """
     Creates a fake profile for a person to later write to a table.
 
-    returns a list containing the fake person's:
+    returns a dictionary containing the fake person's fake data as key, value pairs:
     full_name,
     first_name,
     last_name,
@@ -32,22 +32,21 @@ def create_fake_person_data() -> list:
         last_name = full_name.split(" ")[1]
 
     email_address = f"{first_name.lower()}.{last_name.lower()}@example.com"
-    phone_number = "".join(
-        [choice(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]) for i in range(12)]
-    )
+    phone_number = "".join([choice([str(i) for i in range(10)]) for j in range(12)])
     linkedin_profile = f"wwww.linkedin.com/{first_name.lower()}-{last_name.lower()}"
-    return [
-        full_name,
-        first_name,
-        last_name,
-        email_address,
-        phone_number,
-        linkedin_profile,
-    ]
+    return {
+        "id": None,
+        "full_name": full_name,
+        "first_name": first_name,
+        "last_name": last_name,
+        "email_address": email_address,
+        "phone_number": phone_number,
+        "linkedin_profile": linkedin_profile,
+    }
 
 
 def write_fake_person_data_to_csv_file(
-    fake_person_data: list, id: int, csv_file_name=CSV_FILE_NAME
+    fake_person_data: dict, id: int, csv_file_name=CSV_FILE_NAME
 ) -> None:
     """
     Writes data about a fake person to a csv file (or creates it if it doesn't exist)
@@ -56,40 +55,13 @@ def write_fake_person_data_to_csv_file(
     :param - id (int) a unique identifier for this fake person
     :param - the name of the csv file you want to create (including the extension)
     """
-    fake_person_data.insert(0, id)
+    fake_person_data["id"] = id
 
-    try:
-        with open(csv_file_name, "a", newline="\n") as file:
-            writer = csv.writer(file, delimiter=",")
-            """
-            Csv file headers
-            [
-                "id",
-                "full_name",
-                "first_name",
-                "last_name",
-                "email_address",
-                "phone_number",
-                "linkedin_profile",
-            ]
-            """
-            writer.writerow(fake_person_data)
-    except FileNotFoundError:
-        with open(csv_file_name, "w", newline="\n") as file:
-            writer = csv.writer(file, delimiter=",")
-            """
-            Csv file headers
-            [
-                "id",
-                "full_name",
-                "first_name",
-                "last_name",
-                "email_address",
-                "phone_number",
-                "linkedin_profile",
-            ]
-            """
-            writer.writerow(fake_person_data)
+    write_mode = "a" if csv_file_name in os.listdir() else "w"
+
+    with open(csv_file_name, write_mode, newline="\n") as file:
+        writer = csv.writer(file, delimiter=",")
+        writer.writerow(list((fake_person_data).values()))
 
 
 def load_fake_person_data(file_name: str):
