@@ -77,9 +77,7 @@ def write_fake_person_data_to_csv_file(
     """
     fake_person_data["id"] = id
 
-    write_mode = "a" if csv_file_name in os.listdir() else "w"
-
-    with open(csv_file_name, write_mode, newline="\n") as file:
+    with open(csv_file_name, "a", newline="\n") as file:
         writer = csv.writer(file, delimiter=",")
         writer.writerow(list((fake_person_data).values()))
 
