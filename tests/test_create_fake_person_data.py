@@ -2,6 +2,8 @@ from random import choice
 
 from faker import Faker  # type: ignore
 
+from create_and_load_data import generate_random_phone_number
+
 # Python Basics: Unit testing
 
 
@@ -45,10 +47,10 @@ def test_email_address_has_domain_at_example_dot_com():
 
 
 def test_phone_number_does_not_contain_letters():
-    phone_number = "".join(
-        [choice(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]) for i in range(12)]
-    )
-    assert phone_number.isnumeric()
+    phone_number = generate_random_phone_number()
+    # Get rid of the "+" character
+    # and remove the spaces from the phone_number
+    assert phone_number[1:].replace(" ", "").isnumeric()
 
 
 def test_linkedin_profile_contains_first_name_and_last_name():

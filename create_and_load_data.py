@@ -1,13 +1,32 @@
 import csv
 import os
 import sqlite3
-from random import choice
+from random import choice, randint
 
 from faker import Faker  # type: ignore
+
+from country_codes import country_codes
 
 # Python Basics: Python scope and LEGB rule
 # Global variable
 CSV_FILE_NAME = "fake_person_data.csv"
+
+
+def generate_random_phone_number() -> str:
+    """
+    Creates a random phone number
+
+    returns a phone number with an area code as a string
+    """
+    area_code = choice(country_codes).get("dial_code")
+    area_code = "" if area_code is None else area_code
+    numbers_to_generate = 13 - len(area_code)
+    phone_number = f"""{area_code} {
+        ''.join(
+            [str(randint(0,9)) for i in range(numbers_to_generate)]
+        )
+    }"""
+    return phone_number
 
 
 def create_fake_person_data() -> dict[str, str]:
@@ -32,8 +51,9 @@ def create_fake_person_data() -> dict[str, str]:
         last_name = full_name.split(" ")[1]
 
     email_address = f"{first_name.lower()}.{last_name.lower()}@example.com"
-    phone_number = "".join([choice([str(i) for i in range(10)]) for j in range(12)])
+    phone_number = generate_random_phone_number()
     linkedin_profile = f"wwww.linkedin.com/{first_name.lower()}-{last_name.lower()}"
+
     return {
         "id": None,
         "full_name": full_name,
@@ -64,7 +84,7 @@ def write_fake_person_data_to_csv_file(
         writer.writerow(list((fake_person_data).values()))
 
 
-def load_fake_person_data(file_name: str):
+def load_fake_person_data(file_name: str) -> None:
     # Create a database called fake_people
     con = sqlite3.connect("fake_people.db")
     cur = con.cursor()
@@ -88,10 +108,11 @@ def load_fake_person_data(file_name: str):
     file = open(file_name, "r", newline="\n")
     reader = csv.reader(file, delimiter=",")
     data = [(row) for row in reader]
+    file.close()
+
     cur.executemany("INSERT INTO people VALUES(?, ?, ?, ?, ?, ?, ?)", data)
     con.commit()
     con.close()
-    file.close()
 
 
 if __name__ == "__main__":

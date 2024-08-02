@@ -4,6 +4,8 @@ from random import choice
 
 from faker import Faker  # type: ignore
 
+from create_and_load_data import generate_random_phone_number
+
 # Python Basics: Unit testing
 
 
@@ -23,9 +25,7 @@ def test_create_fake_person_data_loads_fake_person_data_into_a_csv_file():
         """.strip()
     )
 
-    phone_number = "".join(
-        [choice(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]) for i in range(12)]
-    )
+    phone_number = generate_random_phone_number()
 
     linkedin_profile = f"wwww.linkedin.com/{first_name.lower()}-{last_name.lower()}"
 
