@@ -10,6 +10,7 @@ from country_codes import country_codes
 # Python Basics: Python scope and LEGB rule
 # Global variable
 CSV_FILE_NAME = "fake_person_data.csv"
+NUM_OF_FAKE_PEOPLE_TO_GENERATE = 1000
 
 
 def generate_random_phone_number() -> str:
@@ -113,13 +114,37 @@ def load_fake_person_data(file_name: str) -> None:
     con.close()
 
 
+# Intermediate Python: Generators
+def id_generator(row_count: int):
+    """
+    Yields the next id based on the number of rows currently in the
+    fake_person_data.csv file.
+
+    :param - row_count (int) - the starting id number
+    """
+    num = row_count
+    while num <= NUM_OF_FAKE_PEOPLE_TO_GENERATE + num:
+        yield num
+        num += 1
+
+
 if __name__ == "__main__":
+    try:
+        file = open(CSV_FILE_NAME, "r", newline="\n")
+        reader = csv.reader(file, delimiter=",")
+        row_count = sum([1 for _ in reader])
+        file.close()
+    except FileNotFoundError:
+        row_count = 0
+
+    id = id_generator(row_count)
+
     # Python Basics: Control Flow and Functions
-    for i in range(1000):
+    for i in range(NUM_OF_FAKE_PEOPLE_TO_GENERATE):
         # Step 1 - Create data about a fake person
         person_data = create_fake_person_data()
         # Step 2 - Write the data about the fake person to a csv file
-        write_fake_person_data_to_csv_file(person_data, i)
+        write_fake_person_data_to_csv_file(person_data, next(id))
 
     # Step 3 - Load the data about the fake people into a database
     load_fake_person_data(CSV_FILE_NAME)
