@@ -21,7 +21,7 @@ def generate_random_phone_number() -> str:
     """
     area_code = choice(country_codes).get("dial_code")
     area_code = "" if area_code is None else area_code
-    numbers_to_generate = 13 - len(area_code)
+    numbers_to_generate = (13 + area_code.count(" ")) - len(area_code)
     phone_number = f"""{area_code} {
         ''.join(
             [str(randint(0,9)) for i in range(numbers_to_generate)]
