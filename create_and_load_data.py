@@ -31,7 +31,7 @@ def get_phone_number() -> str:
 
 def get_person(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
     """
-    Yields a list containing the fake person's fake data as key, value pairs:
+    Yields a list containing the fake person's fake data as a list
 
     id,
     full_name,
