@@ -70,7 +70,7 @@ def create_fake_person_data() -> dict[str, str]:
 
 
 def write_fake_person_data_to_csv_file(
-    fake_person_data: dict, id: int, csv_file_name=CSV_FILE_NAME
+    fake_person_data: dict, csv_file_name=CSV_FILE_NAME
 ) -> None:
     """
     Writes data about a fake person to a csv file (or creates it if it doesn't exist)
@@ -79,7 +79,6 @@ def write_fake_person_data_to_csv_file(
     :param - id (int) a unique identifier for this fake person
     :param - the name of the csv file you want to create (including the extension)
     """
-    fake_person_data["id"] = id
 
     with open(csv_file_name, "a", newline="\n") as file:
         writer = csv.writer(file, delimiter=",")
@@ -118,12 +117,13 @@ def load_fake_person_data(file_name: str) -> None:
 
 
 # Intermediate Python: Generators
-def id_generator(row_count: int):
+def id_generator(row_count=0):
     """
     Yields the next id based on the number of rows currently in the
     fake_person_data.csv file.
 
-    :param - row_count (int) - the starting id number
+    :param - row_count (int) - the starting id number (optional - if this is not given
+    the starting id will be 0)
     """
     num = row_count
     while num <= NUM_OF_FAKE_PEOPLE_TO_GENERATE + num:
@@ -141,14 +141,15 @@ if __name__ == "__main__":
         row_count = 0
 
     id = id_generator(row_count)
-
-    person = create_fake_person_data()
+    person_generator = create_fake_person_data()
 
     # Python Basics: Control Flow and Functions
     for i in range(NUM_OF_FAKE_PEOPLE_TO_GENERATE):
         # Step 1 - Create data about a fake person
         # Step 2 - Write the data about the fake person to a csv file
-        write_fake_person_data_to_csv_file(next(person), next(id))
+        person = next(person_generator)
+        person["id"] = next(id)
+        write_fake_person_data_to_csv_file(person)
 
     # Step 3 - Load the data about the fake people into a database
     load_fake_person_data(CSV_FILE_NAME)

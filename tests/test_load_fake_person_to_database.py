@@ -4,6 +4,7 @@ import sqlite3
 
 from create_and_load_data import (
     create_fake_person_data,
+    id_generator,
     write_fake_person_data_to_csv_file,
 )
 
@@ -12,11 +13,13 @@ from create_and_load_data import (
 
 def test_load_fake_person_data():
     # Generate fake data
+    id_gen = id_generator()
     fake_person_generator = create_fake_person_data()
     fake_person = next(fake_person_generator)
+    fake_person["id"] = next(id_gen)
 
     # Write this fake data to a file
-    write_fake_person_data_to_csv_file(fake_person, 0, "test_fake_person_data.csv")
+    write_fake_person_data_to_csv_file(fake_person, "test_fake_person_data.csv")
 
     # Create a database called fake_people
     con = sqlite3.connect("test_fake_people.db")
