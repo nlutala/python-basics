@@ -42,28 +42,31 @@ def create_fake_person_data() -> dict[str, str]:
     phone_number,
     linkedin_profile
     """
-    full_name = Faker().name()
+    while True:
+        full_name = Faker().name()
 
-    if "." in full_name.split(" ")[0]:
-        first_name = full_name.split(" ")[1]
-        last_name = full_name.split(" ")[2]
-    else:
-        first_name = full_name.split(" ")[0]
-        last_name = full_name.split(" ")[1]
+        if "." in full_name.split(" ")[0]:
+            first_name = full_name.split(" ")[1]
+            last_name = full_name.split(" ")[2]
+        else:
+            first_name = full_name.split(" ")[0]
+            last_name = full_name.split(" ")[1]
 
-    email_address = f"{first_name.lower()}.{last_name.lower()}@example.com"
-    phone_number = generate_random_phone_number()
-    linkedin_profile = f"wwww.linkedin.com/{first_name.lower()}-{last_name.lower()}"
+        email_address = f"{first_name.lower()}.{last_name.lower()}@example.com"
+        phone_number = generate_random_phone_number()
+        linkedin_profile = f"wwww.linkedin.com/{first_name.lower()}-{last_name.lower()}"
 
-    return {
-        "id": None,
-        "full_name": full_name,
-        "first_name": first_name,
-        "last_name": last_name,
-        "email_address": email_address,
-        "phone_number": phone_number,
-        "linkedin_profile": linkedin_profile,
-    }
+        person = {
+            "id": None,
+            "full_name": full_name,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email_address": email_address,
+            "phone_number": phone_number,
+            "linkedin_profile": linkedin_profile,
+        }
+
+        yield person
 
 
 def write_fake_person_data_to_csv_file(
@@ -139,12 +142,13 @@ if __name__ == "__main__":
 
     id = id_generator(row_count)
 
+    person = create_fake_person_data()
+
     # Python Basics: Control Flow and Functions
     for i in range(NUM_OF_FAKE_PEOPLE_TO_GENERATE):
         # Step 1 - Create data about a fake person
-        person_data = create_fake_person_data()
         # Step 2 - Write the data about the fake person to a csv file
-        write_fake_person_data_to_csv_file(person_data, next(id))
+        write_fake_person_data_to_csv_file(next(person), next(id))
 
     # Step 3 - Load the data about the fake people into a database
     load_fake_person_data(CSV_FILE_NAME)
