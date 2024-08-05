@@ -2,6 +2,7 @@ import csv
 import os
 import sqlite3
 from random import choice, randint
+from uuid import uuid4
 
 from faker import Faker  # type: ignore
 
@@ -10,14 +11,12 @@ from country_codes import country_codes
 # Python Basics: Python scope and LEGB rule
 # Global variable
 CSV_FILE_NAME = "fake_person_data.csv"
-NUM_OF_FAKE_PEOPLE_TO_GENERATE = 1000
+NUM_OF_PEOPLE_TO_GENERATE = 1000
 
 
-def generate_random_phone_number() -> str:
+def get_phone_number() -> str:
     """
-    Creates a random phone number
-
-    returns a phone number with an area code as a string
+    Returns a phone number with an area code as a string
     """
     area_code = choice(country_codes).get("dial_code")
     area_code = "" if area_code is None else area_code
@@ -30,11 +29,10 @@ def generate_random_phone_number() -> str:
     return phone_number
 
 
-def create_fake_person_data():
+def get_person(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
     """
-    Creates a fake profile for a person to later write to a table.
+    Yields a list containing the fake person's fake data as key, value pairs:
 
-    returns a dictionary containing the fake person's fake data as key, value pairs:
     id,
     full_name,
     first_name,
@@ -42,8 +40,13 @@ def create_fake_person_data():
     email_address,
     phone_number,
     linkedin_profile
+
+    :param - num_of_people_to_generate (int)
+
+    Feedback: pass something as a value so the generator knows when to stop
+    (how many people to generate)
     """
-    while True:
+    for i in range(num_of_people_to_generate):
         full_name = Faker().name()
 
         if "." in full_name.split(" ")[0]:
@@ -54,13 +57,13 @@ def create_fake_person_data():
             last_name = full_name.split(" ")[1]
 
         email_address = f"{first_name.lower()}.{last_name.lower()}@example.com"
-        phone_number = generate_random_phone_number()
+        phone_number = get_phone_number()
         linkedin_profile = f"""
                 wwww.linkedin.com/{first_name.lower()}-{last_name.lower()}
         """.strip()
 
         person = {
-            "id": None,
+            "id": str(uuid4()),
             "full_name": full_name,
             "first_name": first_name,
             "last_name": last_name,
@@ -69,25 +72,34 @@ def create_fake_person_data():
             "linkedin_profile": linkedin_profile,
         }
 
-        yield person
+        yield person.values()
 
 
-def write_fake_person_data_to_csv_file(
-    fake_person_data: dict, csv_file_name=CSV_FILE_NAME
-) -> None:
+def write_people_to_csv_file(people, csv_file_name=CSV_FILE_NAME) -> None:
     """
     Writes data about a fake person to a csv file (or creates it if it doesn't exist)
 
-    :param - fake_person_data (list) as returned by creater_fake_person_data()
-    :param - the name of the csv file you want to create (including the extension)
+    :param - person (generator/lazy iterator) - a generator storing people to add to the
+    database
+    :param - csv_file_name (str) - the name of the csv file you want to create
+    (including the .csv extension)
     """
+    # Amend this stop only close the file after all rows are written
+    # Amend function names (then describe in the docstring)
 
     with open(csv_file_name, "a", newline="\n") as file:
         writer = csv.writer(file, delimiter=",")
-        writer.writerow(list((fake_person_data).values()))
+        writer.writerows(people)
 
 
-def load_fake_person_data(file_name: str) -> None:
+def load_people_to_db(csv_file_name: str) -> None:
+    """
+    Writes data about a fake people from a csv file to a database
+
+    :param - csv_file_name (str) - the csv file to read the rows of people from and
+    write to the database.
+    """
+
     # Create a database called fake_people
     con = sqlite3.connect("fake_people.db")
     cur = con.cursor()
@@ -108,52 +120,24 @@ def load_fake_person_data(file_name: str) -> None:
     )
 
     # Insert the data about the fake people from the csv into the table
-    file = open(file_name, "r", newline="\n")
-    reader = csv.reader(file, delimiter=",")
-    data = [(row) for row in reader]
-    file.close()
+    with open(csv_file_name, "r", newline="\n") as file:
+        reader = csv.reader(file, delimiter=",")
+        data = [(row) for row in reader]
 
     cur.executemany("INSERT INTO people VALUES(?, ?, ?, ?, ?, ?, ?)", data)
     con.commit()
     con.close()
 
 
-# Intermediate Python: Generators
-def id_generator(row_count=0):
-    """
-    Yields the next id based on the number of rows currently in the
-    fake_person_data.csv file.
-
-    :param - row_count (int) - the starting id number (optional - if this is not given
-    the starting id will be 0)
-    """
-    num = row_count
-    while num <= NUM_OF_FAKE_PEOPLE_TO_GENERATE + num:
-        yield num
-        num += 1
-
-
 if __name__ == "__main__":
-    try:
-        file = open(CSV_FILE_NAME, "r", newline="\n")
-        reader = csv.reader(file, delimiter=",")
-        row_count = sum([1 for _ in reader])
-        file.close()
-    except FileNotFoundError:
-        row_count = 0
+    # Step 1 - Create data about fake people
+    person = get_person(NUM_OF_PEOPLE_TO_GENERATE)
 
-    id = id_generator(row_count)
-    person_generator = create_fake_person_data()
-
-    # Python Basics: Control Flow and Functions
-    for i in range(NUM_OF_FAKE_PEOPLE_TO_GENERATE):
-        # Step 1 - Create data about a fake person
-        # Step 2 - Write the data about the fake person to a csv file
-        person = next(person_generator)
-        person["id"] = next(id)
-        write_fake_person_data_to_csv_file(person)
+    # Step 2 - Write the data about the fake person to a csv file
+    write_people_to_csv_file(person)
 
     # Step 3 - Load the data about the fake people into a database
-    load_fake_person_data(CSV_FILE_NAME)
+    load_people_to_db(CSV_FILE_NAME)
 
+    # Step 4 (optional) - Remove the csv file of fake people generated
     os.remove(CSV_FILE_NAME)
