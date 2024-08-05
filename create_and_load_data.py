@@ -30,11 +30,12 @@ def generate_random_phone_number() -> str:
     return phone_number
 
 
-def create_fake_person_data() -> dict[str, str]:
+def create_fake_person_data():
     """
     Creates a fake profile for a person to later write to a table.
 
     returns a dictionary containing the fake person's fake data as key, value pairs:
+    id,
     full_name,
     first_name,
     last_name,
@@ -54,7 +55,9 @@ def create_fake_person_data() -> dict[str, str]:
 
         email_address = f"{first_name.lower()}.{last_name.lower()}@example.com"
         phone_number = generate_random_phone_number()
-        linkedin_profile = f"wwww.linkedin.com/{first_name.lower()}-{last_name.lower()}"
+        linkedin_profile = f"""
+                wwww.linkedin.com/{first_name.lower()}-{last_name.lower()}
+        """.strip()
 
         person = {
             "id": None,
@@ -76,7 +79,6 @@ def write_fake_person_data_to_csv_file(
     Writes data about a fake person to a csv file (or creates it if it doesn't exist)
 
     :param - fake_person_data (list) as returned by creater_fake_person_data()
-    :param - id (int) a unique identifier for this fake person
     :param - the name of the csv file you want to create (including the extension)
     """
 
