@@ -18,6 +18,7 @@ def get_phone_number() -> str:
     """
     Returns a phone number with an area code as a string
     """
+
     area_code = choice(country_codes).get("dial_code")
     area_code = "" if area_code is None else area_code
     numbers_to_generate = (13 + area_code.count(" ")) - len(area_code)
@@ -25,27 +26,26 @@ def get_phone_number() -> str:
         ''.join(
             [str(randint(0,9)) for i in range(numbers_to_generate)]
         )
-    }"""
+    }""".strip()
     return phone_number
 
 
 def get_person(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
     """
-    Yields a list containing the fake person's fake data as a list
-
-    id,
-    full_name,
-    first_name,
-    last_name,
-    email_address,
-    phone_number,
-    linkedin_profile
+    Yields a list containing the fake person's fake data as a dictionary
 
     :param - num_of_people_to_generate (int)
 
-    Feedback: pass something as a value so the generator knows when to stop
-    (how many people to generate)
+    Returns a generator of people as key, value pairs: \n
+    "id": str, \n
+    "full_name": str, \n
+    "first_name": str, \n
+    "last_name": str, \n
+    "email_address": str, \n
+    "phone_number": str, \n
+    "linkedin_profile": str, \n
     """
+
     for i in range(num_of_people_to_generate):
         full_name = Faker().name()
 
@@ -72,20 +72,34 @@ def get_person(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
             "linkedin_profile": linkedin_profile,
         }
 
-        yield person.values()
+        yield person
 
 
-def write_people_to_csv_file(people, csv_file_name=CSV_FILE_NAME) -> None:
+def get_rows_of_people(person_iterator) -> list:
     """
-    Writes data about a fake person to a csv file (or creates it if it doesn't exist)
+    Returns rows of people to add to the database \n
 
-    :param - person (generator/lazy iterator) - a generator storing people to add to the
-    database
+    :param - person_iterator (generator/lazy iterator) a generator storing people to add
+    to the database
+    """
+
+    people = []
+
+    while True:
+        try:
+            people.append(next(person_iterator).values())
+        except StopIteration:
+            return people
+
+
+def write_people_to_csv_file(people: list, csv_file_name=CSV_FILE_NAME) -> None:
+    """
+    Writes data about a fake person to a csv file (or creates it if it doesn't exist) \n
+
+    :param - people (list) - rows of people to add to the database \n
     :param - csv_file_name (str) - the name of the csv file you want to create
     (including the .csv extension)
     """
-    # Amend this stop only close the file after all rows are written
-    # Amend function names (then describe in the docstring)
 
     with open(csv_file_name, "a", newline="\n") as file:
         writer = csv.writer(file, delimiter=",")
@@ -94,7 +108,7 @@ def write_people_to_csv_file(people, csv_file_name=CSV_FILE_NAME) -> None:
 
 def load_people_to_db(csv_file_name: str) -> None:
     """
-    Writes data about a fake people from a csv file to a database
+    Writes data about a fake people from a csv file to a database \n
 
     :param - csv_file_name (str) - the csv file to read the rows of people from and
     write to the database.
@@ -134,10 +148,11 @@ if __name__ == "__main__":
     person = get_person(NUM_OF_PEOPLE_TO_GENERATE)
 
     # Step 2 - Write the data about the fake person to a csv file
-    write_people_to_csv_file(person)
+    people = get_rows_of_people(person)
+    write_people_to_csv_file(people)
 
     # Step 3 - Load the data about the fake people into a database
     load_people_to_db(CSV_FILE_NAME)
 
     # Step 4 (optional) - Remove the csv file of fake people generated
-    os.remove(CSV_FILE_NAME)
+    # os.remove(CSV_FILE_NAME)
