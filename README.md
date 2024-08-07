@@ -23,7 +23,7 @@ Ypu can find the latest version of Python available using this link: https://www
 * ``` con = sqlite3.connect("fake_people.db") ```
 * ``` cur = con.cursor() ```
 * ``` list_people = [row for row in cur.execute("SELECT * FROM people")] ```
-* ``` list_people[7] # Returning the fake person with an id of 7 ```
+* ``` list_people[7] # Returning the fake person in the 7th row of the database ```
 
 #### Other comments
 * The program can take quite a while to run as it is creating 1000 fake people. Hopefully as I improve with Python, I can learn some techniques to improve how long the program takes to run. (For the time being, you can change 1000 to 100 on line 15 of the create_and_load_data.py file)
