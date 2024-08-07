@@ -1,4 +1,5 @@
 import csv
+import logging
 import os
 import sqlite3
 from random import choice, randint
@@ -9,9 +10,19 @@ from faker import Faker  # type: ignore
 from country_codes import country_codes
 
 # Python Basics: Python scope and LEGB rule
-# Global variable
+# Global variables
 CSV_FILE_NAME = "fake_person_data.csv"
 NUM_OF_PEOPLE_TO_GENERATE = 1000
+LOGGER = logging.getLogger(__name__)
+
+# Letting the logger know to write all logs at the info level (my logs) and above to a
+# file called create_and_load_data.log
+logging.basicConfig(
+    filename="create_and_load_data.log",
+    filemode="w",  # To write new content everytime the program is run again
+    encoding="utf-8",
+    level=logging.INFO,
+)
 
 
 def get_phone_number() -> str:
@@ -89,6 +100,11 @@ def get_rows_of_people(person_iterator) -> list:
         try:
             people.append(next(person_iterator).values())
         except StopIteration:
+            LOGGER.exception(
+                f"""
+                Finished generating {len(people)} rows of people from their dictionary.
+                """.strip()
+            )
             return people
 
 
@@ -104,6 +120,12 @@ def write_people_to_csv_file(people: list, csv_file_name=CSV_FILE_NAME) -> None:
     with open(csv_file_name, "a", newline="\n") as file:
         writer = csv.writer(file, delimiter=",")
         writer.writerows(people)
+
+    LOGGER.info(
+        f"""
+        Wrote {len(people)} of people to {CSV_FILE_NAME}.
+        """.strip()
+    )
 
 
 def load_people_to_db(csv_file_name: str) -> None:
@@ -141,6 +163,8 @@ def load_people_to_db(csv_file_name: str) -> None:
     cur.executemany("INSERT INTO people VALUES(?, ?, ?, ?, ?, ?, ?)", data)
     con.commit()
     con.close()
+
+    LOGGER.info(f"Wrote {len(data)} number of records to the database.")
 
 
 if __name__ == "__main__":
