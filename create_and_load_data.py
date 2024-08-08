@@ -41,7 +41,7 @@ def get_phone_number() -> str:
     return phone_number
 
 
-def get_person(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
+def get_people(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
     """
     Yields a list containing the fake person's fake data as a dictionary
 
@@ -88,7 +88,7 @@ def get_person(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
 
 def get_rows_of_people(person_iterator) -> list:
     """
-    Returns rows of people to add to the database \n
+    Returns rows of people to add to the database as a list of dictionary values \n
 
     :param - person_iterator (generator/lazy iterator) a generator storing people to add
     to the database
@@ -169,7 +169,7 @@ def load_people_to_db(csv_file_name: str) -> None:
 
 if __name__ == "__main__":
     # Step 1 - Create data about fake people
-    person = get_person(NUM_OF_PEOPLE_TO_GENERATE)
+    person = get_people(NUM_OF_PEOPLE_TO_GENERATE)
 
     # Step 2 - Write the data about the fake person to a csv file
     people = get_rows_of_people(person)
@@ -179,4 +179,4 @@ if __name__ == "__main__":
     load_people_to_db(CSV_FILE_NAME)
 
     # Step 4 (optional) - Remove the csv file of fake people generated
-    # os.remove(CSV_FILE_NAME)
+    os.remove(CSV_FILE_NAME)
