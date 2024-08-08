@@ -54,7 +54,7 @@ def get_person(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
     "last_name": str, \n
     "email_address": str, \n
     "phone_number": str, \n
-    "linkedin_profile": str, \n
+    "linkedin_profile": str
     """
 
     for i in range(num_of_people_to_generate):
