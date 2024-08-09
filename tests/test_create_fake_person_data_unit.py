@@ -4,7 +4,7 @@ from create_and_load_data import write_people_to_csv_file
 
 
 def test_write_people_to_csv_file():
-    # Using mock data
+    # Using mock (fake) for phone_number
     person = {
         "id": "mock_id_1",
         "full_name": "John Doe",
