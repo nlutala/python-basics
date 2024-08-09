@@ -30,8 +30,7 @@ def get_phone_number() -> str:
     Returns a phone number with an area code as a string
     """
 
-    area_code = choice(country_codes).get("dial_code")
-    area_code = "" if area_code is None else area_code
+    area_code = choice(country_codes).get("dial_code", "+1")
     numbers_to_generate = (13 + area_code.count(" ")) - len(area_code)
     phone_number = f"""{area_code} {
         ''.join(
