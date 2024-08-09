@@ -12,7 +12,6 @@ from create_and_load_data import (
 )
 
 
-# Python Basics: Unit testing
 @pytest.fixture
 def people() -> Generator:
     return get_people(1)
