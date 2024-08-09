@@ -3,7 +3,7 @@ import os
 from create_and_load_data import write_people_to_csv_file
 
 
-def test_create_fake_person_data_loads_fake_person_data_into_a_csv_file():
+def test_write_people_to_csv_file():
     # Using mock data
     person = {
         "id": "mock_id_1",
@@ -15,7 +15,7 @@ def test_create_fake_person_data_loads_fake_person_data_into_a_csv_file():
         "linkedin_profile": "wwww.linkedin.com/john-doe",
     }
 
-    row = [person.values()]
+    row = [list(person.values())]
     write_people_to_csv_file(row, "test_fake_person_data.csv")
 
     assert "test_fake_person_data.csv" in os.listdir()

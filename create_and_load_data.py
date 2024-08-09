@@ -86,7 +86,7 @@ def get_people(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
         yield person
 
 
-def get_rows_of_people(person_iterator) -> list:
+def get_rows_of_people(person_iterator) -> list[str]:
     """
     Returns rows of people to add to the database as a list of dictionary values \n
 
@@ -98,7 +98,7 @@ def get_rows_of_people(person_iterator) -> list:
 
     while True:
         try:
-            people.append(next(person_iterator).values())
+            people.append(list(next(person_iterator).values()))
         except StopIteration:
             LOGGER.exception(
                 f"""

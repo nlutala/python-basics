@@ -52,6 +52,12 @@ def test_write_people_to_csv_file(people_list: list) -> None:
     write_people_to_csv_file(people_list, "test_fake_person_data_2.csv")
 
     assert "test_fake_person_data_2.csv" in os.listdir()
+
+    with open("test_fake_person_data_2.csv", "r") as file:
+        file_rows = [row.strip() for row in file]
+
+    assert people_list[0] == file_rows[0].split(",")
+
     os.remove("test_fake_person_data_2.csv")
 
 
@@ -71,16 +77,16 @@ def test_load_fake_person_data(people: Generator) -> None:
     query_result = [row for row in cur.execute("SELECT * FROM people")]
     con.close()
 
-    people_rows = list(people_rows[0])
+    first_person_record = people_rows[0]  # Get the first row
 
     assert len(query_result) == 1
-    assert query_result[0][0] == people_rows[0]
-    assert query_result[0][1] == people_rows[1]
-    assert query_result[0][2] == people_rows[2]
-    assert query_result[0][3] == people_rows[3]
-    assert query_result[0][4] == people_rows[4]
-    assert query_result[0][5] == people_rows[5]
-    assert query_result[0][6] == people_rows[6]
+    assert query_result[0][0] == first_person_record[0]
+    assert query_result[0][1] == first_person_record[1]
+    assert query_result[0][2] == first_person_record[2]
+    assert query_result[0][3] == first_person_record[3]
+    assert query_result[0][4] == first_person_record[4]
+    assert query_result[0][5] == first_person_record[5]
+    assert query_result[0][6] == first_person_record[6]
 
     os.remove("test_fake_person_data_2.csv")
     os.remove("fake_people.db")
