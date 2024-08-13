@@ -2,12 +2,11 @@ import csv
 import logging
 import os
 import sqlite3
-from random import choice, randint
 from uuid import uuid4
 
 from faker import Faker  # type: ignore
 
-from country_codes import country_codes
+from phone_numbers.phone_number import PhoneNumber
 
 # Python Basics: Python scope and LEGB rule
 # Global variables
@@ -23,22 +22,6 @@ logging.basicConfig(
     encoding="utf-8",
     level=logging.INFO,
 )
-
-
-def get_phone_number() -> str:
-    """
-    Returns a phone number with an area code as a string
-    """
-
-    area_code = choice(country_codes).get("dial_code")
-    area_code = "+1" if area_code is None else area_code
-    numbers_to_generate = (13 + area_code.count(" ")) - len(area_code)
-    phone_number = f"""{area_code} {
-        ''.join(
-            [str(randint(0,9)) for i in range(numbers_to_generate)]
-        )
-    }""".strip()
-    return phone_number
 
 
 def get_people(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
@@ -68,7 +51,7 @@ def get_people(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
             last_name = full_name.split(" ")[1]
 
         email_address = f"{first_name.lower()}.{last_name.lower()}@example.com"
-        phone_number = get_phone_number()
+        phone_number = PhoneNumber().get_phone_number()
         linkedin_profile = f"""
                 wwww.linkedin.com/{first_name.lower()}-{last_name.lower()}
         """.strip()

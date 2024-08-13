@@ -2,24 +2,21 @@
 Tests the get_phone_number() method in create_and_load_data.py
 """
 
-from create_and_load_data import get_phone_number
+from phone_numbers.phone_number import PhoneNumber
 
 
-def test_get_phone_number_starts_with_plus() -> None:
+def test_get_phone_number() -> None:
     """
-    All phone numbers generated should start with a "+" followed by a series of numbers.
+    This test validates all phone numbers that are generated and given to the fake
+    people in the application.\n
+
+    All phone numbers generated should:\n
+    - start with a "+"\n
+    - be 13 characters long (without the "+", it should be 12 characters long)
+    - all characters after the "+" should be numbers
     """
-    phone_number = get_phone_number()
+    phone_number = PhoneNumber().get_phone_number()
 
     assert phone_number.startswith("+")
-
-
-def test_get_phone_number_is_12_digits_long() -> None:
-    """
-    All phone numbers generated should be 12 digits long (13 characters in total
-    including the "+").
-    """
-    phone_number = get_phone_number()
-
     assert len(phone_number[1:].replace(" ", "")) == 12
     assert phone_number[1:].replace(" ", "").isnumeric()
