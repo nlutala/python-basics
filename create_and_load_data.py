@@ -52,6 +52,9 @@ def load_people_to_db(csv_file_name: str) -> int:
     returns the number of rows written to the database
     """
 
+    if "fake_people.db" in os.listdir():
+        os.remove("fake_people.db")
+
     # Create a database called fake_people
     con = sqlite3.connect("fake_people.db")
     cur = con.cursor()

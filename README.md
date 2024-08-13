@@ -27,7 +27,6 @@ Ypu can find the latest version of Python available using this link: https://www
 
 #### Other comments
 * The program can take quite a while to run as it is creating 1000 fake people. Hopefully as I improve with Python, I can learn some techniques to improve how long the program takes to run. (For the time being, you can change 1000 to 100 on line 16 of the create_and_load_data.py file)
-* If you would like run this program more than once, please ensure that you delete the fake_people.db database that is created after running the create_and_load_data.py file.
 * Feel free to navigate to the tests directory (ensuring that you are still within the virtual environment) and writing ``` pytest ``` in the terminal.
 
 ### Author
