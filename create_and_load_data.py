@@ -1,3 +1,8 @@
+"""
+The main .py file to run which creates records of fake people, writes them to a .csv
+file and then writes these records of fake people from the .csv file to a database.
+"""
+
 import csv
 import logging
 import os
@@ -11,8 +16,10 @@ CSV_FILE_NAME = "fake_person_data.csv"
 NUM_OF_PEOPLE_TO_GENERATE = 1000
 LOGGER = logging.getLogger(__name__)
 
-# Letting the logger know to write all logs at the info level (my logs) and above to a
-# file called create_and_load_data.log
+"""
+Letting the logger know to write all logs at the info level (my logs) and above to a
+file called create_and_load_data.log
+"""
 logging.basicConfig(
     filename="create_and_load_data.log",
     filemode="w",  # To write new content everytime the program is run again
