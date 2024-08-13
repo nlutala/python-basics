@@ -2,7 +2,7 @@
 Tests the get_phone_number() method in create_and_load_data.py
 """
 
-from phone_numbers.phone_number import PhoneNumber
+from phone_numbers.phone_number import get_phone_number
 
 
 def test_get_phone_number() -> None:
@@ -12,10 +12,10 @@ def test_get_phone_number() -> None:
 
     All phone numbers generated should:\n
     - start with a "+"\n
-    - be 13 characters long (without the "+", it should be 12 characters long)
+    - be 13 characters long (without the "+", it should be 12 characters long)\n
     - all characters after the "+" should be numbers
     """
-    phone_number = PhoneNumber().get_phone_number()
+    phone_number = get_phone_number()
 
     assert phone_number.startswith("+")
     assert len(phone_number[1:].replace(" ", "")) == 12

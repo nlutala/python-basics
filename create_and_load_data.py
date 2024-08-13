@@ -6,7 +6,7 @@ from uuid import uuid4
 
 from faker import Faker  # type: ignore
 
-from phone_numbers.phone_number import PhoneNumber
+from phone_numbers.phone_number import get_phone_number
 
 # Python Basics: Python scope and LEGB rule
 # Global variables
@@ -51,7 +51,7 @@ def get_people(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
             last_name = full_name.split(" ")[1]
 
         email_address = f"{first_name.lower()}.{last_name.lower()}@example.com"
-        phone_number = PhoneNumber().get_phone_number()
+        phone_number = get_phone_number()
         linkedin_profile = f"""
                 wwww.linkedin.com/{first_name.lower()}-{last_name.lower()}
         """.strip()
@@ -83,9 +83,9 @@ def get_rows_of_people(person_iterator) -> list[str]:
         try:
             people.append(list(next(person_iterator).values()))
         except StopIteration:
-            LOGGER.exception(
+            LOGGER.info(
                 f"""
-                Finished generating {len(people)} rows of people from their dictionary.
+                Finished generating {len(people)} rows of people.
                 """.strip()
             )
             return people
