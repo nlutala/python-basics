@@ -2,11 +2,8 @@ import csv
 import logging
 import os
 import sqlite3
-from uuid import uuid4
 
-from faker import Faker  # type: ignore
-
-from phone_numbers.phone_number import get_phone_number
+from fake_people.fake_people_records import get_people, get_rows_of_people
 
 # Python Basics: Python scope and LEGB rule
 # Global variables
@@ -24,73 +21,6 @@ logging.basicConfig(
 )
 
 
-def get_people(num_of_people_to_generate=NUM_OF_PEOPLE_TO_GENERATE):
-    """
-    Yields a list containing the fake person's fake data as a dictionary
-
-    :param - num_of_people_to_generate (int)
-
-    Returns a generator of people as key, value pairs: \n
-    "id": str, \n
-    "full_name": str, \n
-    "first_name": str, \n
-    "last_name": str, \n
-    "email_address": str, \n
-    "phone_number": str, \n
-    "linkedin_profile": str
-    """
-
-    for i in range(num_of_people_to_generate):
-        full_name = Faker().name()
-
-        if "." in full_name.split(" ")[0]:
-            first_name = full_name.split(" ")[1]
-            last_name = full_name.split(" ")[2]
-        else:
-            first_name = full_name.split(" ")[0]
-            last_name = full_name.split(" ")[1]
-
-        email_address = f"{first_name.lower()}.{last_name.lower()}@example.com"
-        phone_number = get_phone_number()
-        linkedin_profile = f"""
-                wwww.linkedin.com/{first_name.lower()}-{last_name.lower()}
-        """.strip()
-
-        person = {
-            "id": str(uuid4()),
-            "full_name": full_name,
-            "first_name": first_name,
-            "last_name": last_name,
-            "email_address": email_address,
-            "phone_number": phone_number,
-            "linkedin_profile": linkedin_profile,
-        }
-
-        yield person
-
-
-def get_rows_of_people(person_iterator) -> list[str]:
-    """
-    Returns rows of people to add to the database as a list of dictionary values \n
-
-    :param - person_iterator (generator/lazy iterator) a generator storing people to add
-    to the database
-    """
-
-    people = []
-
-    while True:
-        try:
-            people.append(list(next(person_iterator).values()))
-        except StopIteration:
-            LOGGER.info(
-                f"""
-                Finished generating {len(people)} rows of people.
-                """.strip()
-            )
-            return people
-
-
 def write_people_to_csv_file(people: list, csv_file_name=CSV_FILE_NAME) -> None:
     """
     Writes data about a fake person to a csv file (or creates it if it doesn't exist) \n
@@ -104,19 +34,15 @@ def write_people_to_csv_file(people: list, csv_file_name=CSV_FILE_NAME) -> None:
         writer = csv.writer(file, delimiter=",")
         writer.writerows(people)
 
-    LOGGER.info(
-        f"""
-        Wrote {len(people)} of people to {CSV_FILE_NAME}.
-        """.strip()
-    )
 
-
-def load_people_to_db(csv_file_name: str) -> None:
+def load_people_to_db(csv_file_name: str) -> int:
     """
     Writes data about a fake people from a csv file to a database \n
 
     :param - csv_file_name (str) - the csv file to read the rows of people from and
-    write to the database.
+    write to the database.\n
+
+    returns the number of rows written to the database
     """
 
     # Create a database called fake_people
@@ -147,7 +73,7 @@ def load_people_to_db(csv_file_name: str) -> None:
     con.commit()
     con.close()
 
-    LOGGER.info(f"Wrote {len(data)} number of records to the database.")
+    return len(data)
 
 
 if __name__ == "__main__":
@@ -156,10 +82,14 @@ if __name__ == "__main__":
 
     # Step 2 - Write the data about the fake person to a csv file
     people = get_rows_of_people(person)
+    LOGGER.info(f"Finished generating {len(people)} rows of people.")
+
     write_people_to_csv_file(people)
+    LOGGER.info(f"Wrote {len(people)} of people to {CSV_FILE_NAME}.")
 
     # Step 3 - Load the data about the fake people into a database
-    load_people_to_db(CSV_FILE_NAME)
+    num_of_rows = load_people_to_db(CSV_FILE_NAME)
+    LOGGER.info(f"Wrote {num_of_rows} number of records to the database.")
 
     # Step 4 (optional) - Remove the csv file of fake people generated
     os.remove(CSV_FILE_NAME)
