@@ -9,6 +9,11 @@ from create_and_load_data import load_people_to_db
 
 
 def test_load_people_to_db_on_predefined_file():
+    """
+    There should be the same amount of records in the csv file that is loaded into the
+    database.
+    """
+
     num_of_records = load_people_to_db("fake_person_data.csv")
     con = sqlite3.connect("fake_people.db")
     cur = con.cursor()
