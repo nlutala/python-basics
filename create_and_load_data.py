@@ -28,11 +28,14 @@ logging.basicConfig(
 )
 
 
-def write_people_to_csv_file(people: list, csv_file_name=CSV_FILE_NAME) -> None:
+def write_people_to_csv_file(
+    people: list[list[str]], csv_file_name=CSV_FILE_NAME
+) -> None:
     """
-    Writes data about a fake person to a csv file (or creates it if it doesn't exist) \n
+    Writes data about a fake person to a csv file (or creates it if it doesn't exist)\n
 
-    :param - people (list) - rows of people to add to the database \n
+    :param - people (list of a list of strings) - rows of people to add to the
+    database\n
     :param - csv_file_name (str) - the name of the csv file you want to create
     (including the .csv extension)
     """
@@ -88,18 +91,19 @@ def load_people_to_db(csv_file_name: str) -> int:
 
 if __name__ == "__main__":
     # Step 1 - Create data about fake people
-    person = get_people(NUM_OF_PEOPLE_TO_GENERATE)
+    people = get_people(NUM_OF_PEOPLE_TO_GENERATE)
 
-    # Step 2 - Write the data about the fake person to a csv file
-    people = get_rows_of_people(person)
-    LOGGER.info(f"Finished generating {len(people)} rows of people.")
+    # Step 2 - Get the records of people from the generator
+    people_records = get_rows_of_people(people)
+    LOGGER.info(f"Finished generating {len(people_records)} rows of people.")
 
-    write_people_to_csv_file(people)
-    LOGGER.info(f"Wrote {len(people)} of people to {CSV_FILE_NAME}.")
+    # Step 3 - Write the data about the fake person to a csv file
+    write_people_to_csv_file(people_records)
+    LOGGER.info(f"Wrote {len(people_records)} of people to {CSV_FILE_NAME}.")
 
-    # Step 3 - Load the data about the fake people into a database
+    # Step 4 - Load the data about the fake people into a database
     num_of_rows = load_people_to_db(CSV_FILE_NAME)
     LOGGER.info(f"Wrote {num_of_rows} number of records to the database.")
 
-    # Step 4 (optional) - Remove the csv file of fake people generated
+    # Step 5 (optional) - Remove the csv file of fake people generated
     os.remove(CSV_FILE_NAME)
