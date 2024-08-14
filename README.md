@@ -12,7 +12,7 @@ Ypu can find the latest version of Python available using this link: https://www
 
 ### Installing
 * Open your preferred terminal (command prompt, windows powershell etc.) in the directory where this README.md file is located
-* Create a virtual environment by writing ``` python -m .venv ```
+* Create a virtual environment by writing ``` python -m .venv ``` (feel free to look at the venv documentation here: https://docs.python.org/3/library/venv.html)
 * Activate the virtual environment writing: ``` source .venv/bin/activate ```
 * Now write ``` python pip -r requirements.txt ``` to install the dependencies needed for this project
 * Now you should have the required libraries to run the project
