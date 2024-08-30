@@ -8,7 +8,7 @@ This is a small script with the aim of generating fake data for fictional people
 ### Dependencies
 Please ensure that you have Python version 3 installed on your computer.
 
-Ypu can find the latest version of Python available using this link: https://www.python.org/downloads/
+You can find the latest version of Python available using this link: https://www.python.org/downloads/
 
 ### Installing
 * Open your preferred terminal (command prompt, windows powershell etc.) in the directory where this README.md file is located
