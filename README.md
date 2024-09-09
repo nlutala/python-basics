@@ -35,7 +35,7 @@ You can find the latest version of Python available using this link: https://www
 Nathan Lutala, nlutala
 
 ## Version History
-* 0.1 - First release
+* 0.1 - First release (https://github.com/nlutala/python-basics/tree/d2358099aa1d1ff915e80de4970269c98653436b)
 
 ## Acknowledgements
 Inspiration for writing this readme file
