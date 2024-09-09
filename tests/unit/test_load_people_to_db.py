@@ -16,14 +16,20 @@ def test_load_people_to_db_on_predefined_file():
     test_files_dir = os.path.dirname(__file__)
     test_files_dir = os.path.join(test_files_dir, "test_files")
 
+    con = sqlite3.connect("fake_people.db")
+    cur = con.cursor()
+    people_before_load = [row for row in cur.execute("SELECT * FROM people")]
+    con.close()
+
     num_of_records = load_people_to_db(
         os.path.join(test_files_dir, "fake_person_data.csv")
     )
+
     con = sqlite3.connect("fake_people.db")
     cur = con.cursor()
-    num_of_records_in_db = [row for row in cur.execute("SELECT * FROM people")]
+    people_after_load = [row for row in cur.execute("SELECT * FROM people")]
     con.close()
 
-    assert num_of_records == len(num_of_records_in_db)
+    assert len(people_after_load) - len(people_before_load) == num_of_records
 
     os.remove("fake_people.db")
