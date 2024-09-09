@@ -2,7 +2,7 @@
 A file containing phone country codes as found posted on Github
 by Goles: https://gist.github.com/Goles/3196253
 
-I changed Antartica's dial_code from null to None
+I changed land Island and Antartica's dial_code from '' and null (respectively) to None
 """
 
 country_codes = [
@@ -42,7 +42,7 @@ country_codes = [
     {"name": "Cameroon", "dial_code": "+237", "code": "CM"},
     {"name": "Canada", "dial_code": "+1", "code": "CA"},
     {"name": "Cape Verde", "dial_code": "+238", "code": "CV"},
-    {"name": "Cayman Islands", "dial_code": "+ 345", "code": "KY"},
+    {"name": "Cayman Islands", "dial_code": "+345", "code": "KY"},
     {"name": "Central African Republic", "dial_code": "+236", "code": "CF"},
     {"name": "Chad", "dial_code": "+235", "code": "TD"},
     {"name": "Chile", "dial_code": "+56", "code": "CL"},
@@ -207,7 +207,7 @@ country_codes = [
     {"name": "Yemen", "dial_code": "+967", "code": "YE"},
     {"name": "Zambia", "dial_code": "+260", "code": "ZM"},
     {"name": "Zimbabwe", "dial_code": "+263", "code": "ZW"},
-    {"name": "land Islands", "dial_code": "", "code": "AX"},
+    {"name": "land Islands", "dial_code": None, "code": "AX"},
     {"name": "Antarctica", "dial_code": None, "code": "AQ"},
     {"name": "Bolivia, Plurinational State of", "dial_code": "+591", "code": "BO"},
     {"name": "Brunei Darussalam", "dial_code": "+673", "code": "BN"},

@@ -7,9 +7,8 @@ import os
 import sqlite3
 from uuid import uuid4
 
-from faker import Faker
-
 from create_and_load.phone_numbers.phone_number import get_phone_number
+from faker import Faker
 
 CSV_FILE_NAME = "fake_person_data.csv"
 
@@ -105,27 +104,30 @@ def load_people_to_db(csv_file_name: str) -> int:
     returns the number of rows written to the database
     """
 
-    if "fake_people.db" in os.listdir():
-        os.remove("fake_people.db")
+    # Set initially to False as we will then check if the fake_people.db already exists
+    parent_dir = os.path.dirname(__file__).partition("create_and_load")[0]
+    path_to_db = os.path.join(parent_dir, "fake_people.db")
+    only_insert = True if "fake_people.db" in os.listdir(parent_dir) else False
 
     # Create a database called fake_people
-    con = sqlite3.connect("fake_people.db")
+    con = sqlite3.connect(path_to_db)
     cur = con.cursor()
 
-    # Create the table in the fake_people database
-    cur.execute(
-        """
-        CREATE TABLE people(
-            id,
-            full_name,
-            first_name,
-            last_name,
-            email_address,
-            phone_number,
-            linkedin_profile
+    if only_insert is False:
+        # Create the table in the fake_people database
+        cur.execute(
+            """
+            CREATE TABLE people(
+                id,
+                full_name,
+                first_name,
+                last_name,
+                email_address,
+                phone_number,
+                linkedin_profile
+            )
+            """
         )
-        """
-    )
 
     # Insert the data about the fake people from the csv into the table
     with open(csv_file_name, "r", newline="\n") as file:
