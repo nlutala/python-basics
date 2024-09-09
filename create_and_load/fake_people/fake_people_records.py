@@ -7,8 +7,10 @@ import os
 import sqlite3
 from uuid import uuid4
 
-from create_and_load.phone_numbers.phone_number import get_phone_number
 from faker import Faker
+
+from create_and_load.phone_numbers.phone_number import get_phone_number
+from decorators import log_activity
 
 CSV_FILE_NAME = "fake_person_data.csv"
 
@@ -77,6 +79,7 @@ def get_rows_of_people(person_iterator) -> list[list[str]]:
             return people
 
 
+@log_activity
 def write_people_to_csv_file(
     people: list[list[str]], csv_file_name=CSV_FILE_NAME
 ) -> None:
@@ -94,6 +97,7 @@ def write_people_to_csv_file(
         writer.writerows(people)
 
 
+@log_activity
 def load_people_to_db(csv_file_name: str) -> int:
     """
     Writes data about a fake people from a csv file to a database \n
