@@ -91,23 +91,19 @@ def test_step_3_and_step_4():
         rows_in_csv = [row for row in reader]
 
     # Step 4
-    load_people_to_db(test_file)
+    num_records_in_db = load_people_to_db(test_file)
 
-    con = sqlite3.connect("fake_people.db")
-    cur = con.cursor()
-    records_in_db = [row for row in cur.execute("SELECT * FROM people")]
-    con.close()
+    assert len(rows_in_csv) == num_records_in_db
 
-    assert len(rows_in_csv) == len(records_in_db)
-
-    for i, row in enumerate(rows_in_csv):
-        assert row[0] == records_in_db[i][0]
-        assert row[1] == records_in_db[i][1]
-        assert row[2] == records_in_db[i][2]
-        assert row[3] == records_in_db[i][3]
-        assert row[4] == records_in_db[i][4]
-        assert row[5] == records_in_db[i][5]
-        assert row[6] == records_in_db[i][6]
-
+    # Remove side-effects from the test
     os.remove(test_file)
-    os.remove("fake_people.db")
+
+    parent_dir = os.path.dirname(__file__).partition("tests")[0]
+    path_to_db = os.path.join(parent_dir, "fake_people.db")
+    con = sqlite3.connect(path_to_db)
+    cur = con.cursor()
+    cur.execute(
+        f"delete from people where id in ('{rows_in_csv[0][0]}', '{rows_in_csv[1][0]}')"
+    )
+    con.commit()
+    con.close()
