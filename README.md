@@ -36,7 +36,7 @@ Nathan Lutala, nlutala
 
 ## Version History
 * 0.1 - First release (https://github.com/nlutala/python-basics/tree/d2358099aa1d1ff915e80de4970269c98653436b)
-* 0.2 - Second release (https://github.com/nlutala/python-basics/tree/ee17b8a4979b3485f0dcec1573fef58d29f0acb0)
+* 0.2 - Second release (https://github.com/nlutala/python-basics/tree/289a8fb83f48d1589159762196ad2468c857c18b)
 
 ## Acknowledgements
 Inspiration for writing this readme file
