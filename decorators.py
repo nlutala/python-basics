@@ -32,7 +32,7 @@ def log_activity(func: callable):
     def wrapper(*args, **kwargs):
         res = func(*args, **kwargs)
         LOGGER.info(
-            f"Received {res} from {func} when executed at {str(datetime.now())}"
+            f"Received {res} from {func.__name__} when executed at {str(datetime.now())}"
         )
         return res
 
