@@ -114,32 +114,31 @@ def load_people_to_db(csv_file_name: str) -> int:
     only_insert = True if "fake_people.db" in os.listdir(parent_dir) else False
 
     # Create a database called fake_people
-    con = sqlite3.connect(path_to_db)
-    cur = con.cursor()
+    with sqlite3.connect(path_to_db) as con:
+        cur = con.cursor()
 
-    if only_insert is False:
-        # Create the table in the fake_people database
-        cur.execute(
-            """
-            CREATE TABLE people(
-                id,
-                full_name,
-                first_name,
-                last_name,
-                email_address,
-                phone_number,
-                linkedin_profile
+        if only_insert is False:
+            # Create the table in the fake_people database
+            cur.execute(
+                """
+                CREATE TABLE people(
+                    id,
+                    full_name,
+                    first_name,
+                    last_name,
+                    email_address,
+                    phone_number,
+                    linkedin_profile
+                )
+                """
             )
-            """
-        )
 
-    # Insert the data about the fake people from the csv into the table
-    with open(csv_file_name, "r", newline="\n") as file:
-        reader = csv.reader(file, delimiter=",")
-        data = [(row) for row in reader]
+        # Insert the data about the fake people from the csv into the table
+        with open(csv_file_name, "r", newline="\n") as file:
+            reader = csv.reader(file, delimiter=",")
+            data = [(row) for row in reader]
 
-    cur.executemany("INSERT INTO people VALUES(?, ?, ?, ?, ?, ?, ?)", data)
-    con.commit()
-    con.close()
+        cur.executemany("INSERT INTO people VALUES(?, ?, ?, ?, ?, ?, ?)", data)
+        con.commit()
 
     return len(data)
